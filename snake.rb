@@ -6,7 +6,7 @@ def reset_grid
   @grid = Array.new(20, ".").map{|row| Array.new(40, ".")}
 end
 
-key_moves = {"e" => "up", "d" => "down", "o" => "left", "p" => "right", "q" => "quit", "c" => "clear" }
+@key_moves = {"e" => "up", "d" => "down", "o" => "left", "p" => "right", "q" => "quit", "c" => "clear" }
 
 @bugs_and_scores = {"*" => 10, "#" =>5, "?" => -5, ";" => -10, "." => 0, "@" => 0, "X" => 100, "~" => 0, "0" => 0} 
 
@@ -16,6 +16,7 @@ key_moves = {"e" => "up", "d" => "down", "o" => "left", "p" => "right", "q" => "
 @snake_length = 1
 @snake_squares = []
 @square_to_reset
+@previous_direction = ''
 
 def add_bug bug 
   @grid[rand(1..18)][rand(1..38)] = bug
@@ -29,7 +30,6 @@ def add_bugs
     add_bug ";"
   end
   add_bug "X"
-  #add_bug @snake
   add_bug @snake_extender
 end
 
@@ -72,7 +72,6 @@ def set_current_square
   else
     @square_to_reset = @snake_squares.shift
     @grid[@x][@y] = @snake 
-    #@grid[@x][@y] = @snake 
   end
 end
 
@@ -83,9 +82,9 @@ end
 #end
 
 def make_move
-  #if @grid[@x][@y] == @snake
-  #  return game_over_cannibal?
-  #end
+  if @grid[@x][@y] == @snake
+    return game_over_cannibal?
+  end
   set_score
   set_current_square
   reset_old_square
@@ -130,55 +129,132 @@ end
 def move_snake? direction
   case direction
     when 'up'
-      move_up
+        move_up
     when 'down'
-      move_down
+        move_down
     when 'left'
-      move_left
+        move_left
     when 'right'
-      move_right
+        move_right
     when 'clear'
       reset_grid
       @grid[@x][@y]= @snake
   end
 end
 
-@x = 10
-@y = 10
+#def is_not_opposite_direction? direction
+#  #binding.pry;''
+#  case direction
+#    when 'e'
+#      if @previous_direction == 'd' || @previous_direction == ''
+#        return false
+#      end
+#    when 'd'
+#      if @previous_direction == 'e' || @previous_direction == ''
+#        return false
+#      end
+#    when 'o'
+#      if @previous_direction == 'p' || @previous_direction == ''
+#        return false
+#      end
+#    when 'p'
+#      if @previous_direction == 'o' || @previous_direction == ''
+#        return false
+#      end
+#  end
+#  return true
+#end
 
-reset_grid
+def play_game
+  @x = 10
+  @y = 10
+  
+  reset_grid
+  
+  sq = { "x" => @x, "y" => @y}
+  @snake_squares << sq
+  @grid[@x][@y] = @snake
+  
+  
+  puts `clear`
+  add_bugs
+  print_matrix
+  
+  term = `stty -g`
+  `stty raw -echo cbreak`
+  @direction = ''
+  loop do
+    `clear`
+    if STDIN.ready?
+      command = STDIN.getc
+      if command == 'q' 
+        break
+      end
+      @previous_direction = @direction
+      @direction = command
+    end
+    #if is_not_opposite_direction? (@direction)
+    if @key_moves.has_key?(command)
+      @direction = command   
+    end
 
-sq = { "x" => @x, "y" => @y}
-@snake_squares << sq
-@grid[@x][@y] = @snake
-
-
-puts `clear`
-add_bugs
-print_matrix
-
-term = `stty -g`
-`stty raw -echo cbreak`
-@direction = ''
-loop do
-  `clear`
-  if STDIN.ready?
-    command = STDIN.getc
-    if command == 'q' 
+    if move_snake?(@key_moves[@direction]) == false
       break
     end
-    @direction = command
+  
+    sleep 0.2
+    puts `clear`
+    print_matrix
+    #puts "#{@direction} : #{@previous_direction}"
   end
-  if key_moves.has_key?(command)
-    @direction = command
-  end
-
-  if move_snake?(key_moves[@direction]) == false
-    break
-  end
-
-  sleep 0.2
-  puts `clear`
-  print_matrix
+  #end
 end
 
+def home
+  puts `clear`
+  puts "              /^\\/^\\"
+  puts "            _|__|  O|"
+  puts "   \\/     /~     \\_/ \\"
+  puts "    \\____|__________/  \\"
+  puts "        \\_______      \\"
+  puts "                `\\     \\                  \\"
+  puts "                  |     |                   \\"
+  puts "                 /      /                    \\   " 
+  puts "                /     /                       \\"
+  puts "              /      /                         \\\\"
+  puts "             /     /                            \\ \\"
+  puts "           /     /             _----_            \\  \\"
+  puts "          /     /           _-~      ~-_         |   |"
+  puts "         (      (        _-~    _--_    ~-_     _/   |"
+  puts "          \\      ~-____-~    _-~    ~-_    ~-_-~    /"
+  puts "            ~-_           _-~          ~-_       _-~"
+  puts "               ~--______-~                ~-___-~"
+
+  puts
+  puts
+  puts "Welcome to Snake"
+  puts
+  puts "Move your snake around the screen eating apples in order to grow."
+  puts
+  puts "But beware of running into yourself or running off the screen "
+  puts "as this will result in your instant death!"
+  puts
+  puts "Controls:"
+  puts
+  puts "\t\tUp\t-->\te"
+  puts
+  puts "\t\tDown\t-->\td"
+  puts
+  puts "\t\tLeft\t-->\to"
+  puts
+  puts "\t\tRight\t-->\tp"
+  puts
+  puts "\t\tQuit\t-->\tq"
+  puts
+  puts "Press 'Enter' to start"
+end
+
+home
+gets
+puts `clear`
+play_game
