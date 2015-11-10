@@ -8,10 +8,14 @@ end
 
 key_moves = {"e" => "up", "d" => "down", "o" => "left", "p" => "right", "q" => "quit", "c" => "clear" }
 
-@bugs_and_scores = {"*" => 10, "#" =>5, "?" => -5, ";" => -10, "." => 0, "@" => 0, "X" => 100} 
+@bugs_and_scores = {"*" => 10, "#" =>5, "?" => -5, ";" => -10, "." => 0, "@" => 0, "X" => 100, "~" => 0, "0" => 0} 
 
 @score = 0
-@snake = '~'
+@snake = '@'
+@snake_extender="0"
+@snake_length = 1
+@snake_squares = []
+@square_to_reset
 
 def add_bug bug 
   @grid[rand(1..18)][rand(1..38)] = bug
@@ -25,6 +29,8 @@ def add_bugs
     add_bug ";"
   end
   add_bug "X"
+  #add_bug @snake
+  add_bug @snake_extender
 end
 
 def set_score
@@ -33,12 +39,12 @@ def set_score
 end
 
 def print_matrix
-  @grid.each_with_index do |row, i|
+  @grid.each do |row|
     print row.join(" ")
     puts
   end
-  puts "Score: #{@score}"
-  puts "x : #{@x} y: #{@y}"
+  puts "Score: #{@score} Snake Length: #{@snake_length}"
+  #puts "x : #{@x} y: #{@y}"
 end
 
 def game_over?
@@ -46,22 +52,51 @@ def game_over?
   return false
 end
 
+def game_over_cannibal?
+  puts "You ate yourself! - GAME OVER!"
+  return false
+end
+
 def reset_old_square
-  @grid[@x][@y]= '.'
+  @grid[@square_to_reset["x"]][@square_to_reset["y"]] = "."
 end
 
 def set_current_square
-  @grid[@x][@y]= @snake
+  sq = { "x" => @x, "y" => @y}
+  @snake_squares << sq
+
+  if @grid[@x][@y] == @snake_extender
+    @snake_length = @snake_length + 1
+    add_bug @snake_extender
+    @grid[@x][@y] = @snake
+  else
+    @square_to_reset = @snake_squares.shift
+    @grid[@x][@y] = @snake 
+    #@grid[@x][@y] = @snake 
+  end
+end
+
+#def set_snake_squares
+#  @snake_squares.each do |square|
+#    print "#{square["x"]} , #{square["y"]}"
+# end
+#end
+
+def make_move
+  #if @grid[@x][@y] == @snake
+  #  return game_over_cannibal?
+  #end
+  set_score
+  set_current_square
+  reset_old_square
 end
 
 def move_up
   if @x == 0
     game_over?
   elsif @x > 0
-    reset_old_square
     @x = @x - 1
-    set_score
-    set_current_square
+    make_move
   end
 end
 
@@ -69,10 +104,8 @@ def move_down
   if @x == 19
     game_over?
   elsif @x < 19
-    reset_old_square
     @x = @x + 1
-    set_score
-    set_current_square
+    make_move
   end
 end
 
@@ -80,10 +113,8 @@ def move_left
   if @y == 0
     game_over?
   elsif @y > 0
-    reset_old_square
     @y = @y - 1
-    set_score
-    set_current_square
+    make_move
   end
 end
 
@@ -91,10 +122,8 @@ def move_right
   if @y == 39
     game_over?
   elsif @y < 39
-    reset_old_square
     @y = @y + 1
-    set_score
-    set_current_square
+    make_move
   end
 end
 
@@ -119,7 +148,10 @@ end
 
 reset_grid
 
-@grid[@x][@y]= @snake
+sq = { "x" => @x, "y" => @y}
+@snake_squares << sq
+@grid[@x][@y] = @snake
+
 
 puts `clear`
 add_bugs
