@@ -2,13 +2,18 @@ require 'io/console'
 require 'io/wait'
 require 'pry-byebug'
 
+@numRows = 20
+@numColumns = 40
+
 def reset_grid
-  @grid = Array.new(20, ".").map{|row| Array.new(40, ".")}
+  @grid = Array.new(@numRows, ".").map{|row| Array.new(@numColumns, ".")}
 end
 
 @key_moves = {"e" => "up", "d" => "down", "o" => "left", "p" => "right", "q" => "quit", "c" => "clear" }
 
 @bugs_and_scores = {"*" => 10, "#" =>5, "?" => -5, ";" => -10, "." => 0, "@" => 0, "X" => 100, "~" => 0, "0" => 0} 
+
+@skill_levels = {"1" => 0.1, "2" => 0.2, "3" => 0.3}
 
 @score = 0
 @snake = '@'
@@ -17,6 +22,7 @@ end
 @snake_squares = []
 @square_to_reset
 @previous_direction = ''
+@speed
 
 def add_bug bug 
   @grid[rand(1..18)][rand(1..38)] = bug
@@ -82,7 +88,7 @@ end
 #end
 
 def make_move
-  if @grid[@x][@y] == @snake
+  if @grid[@x][@y] == @snake && @snake_length > 1
     return game_over_cannibal?
   end
   set_score
@@ -100,9 +106,9 @@ def move_up
 end
 
 def move_down
-  if @x == 19
+  if @x == (@numRows - 1)
     game_over?
-  elsif @x < 19
+  elsif @x < (@numRows - 1)
     @x = @x + 1
     make_move
   end
@@ -118,9 +124,9 @@ def move_left
 end
 
 def move_right
-  if @y == 39
+  if @y == (@numColumns - 1)
     game_over?
-  elsif @y < 39
+  elsif @y < (@numColumns - 1)
     @y = @y + 1
     make_move
   end
@@ -202,7 +208,9 @@ def play_game
       break
     end
   
-    sleep 0.2
+    #sleep 0.2
+    #sleep 0.1
+    sleep @speed
     puts `clear`
     print_matrix
     #puts "#{@direction} : #{@previous_direction}"
@@ -251,10 +259,29 @@ def home
   puts
   puts "\t\tQuit\t-->\tq"
   puts
-  puts "Press 'Enter' to start"
+end
+
+def getSkillLevel
+  puts "Select your skill level:"
+  puts 
+  puts "\t1\t->\tDifficult"
+  puts 
+  puts "\t2\t->\tNormal"
+  puts 
+  puts "\t3\t->\tEasy"
+  puts
+  
+  loop do
+    level = gets.chomp
+    if @skill_levels.has_key?(level)
+        @speed =  @skill_levels[level]
+        break
+    end
+    puts "That is not a valid selection - please try again"
+  end
 end
 
 home
-gets
+getSkillLevel
 puts `clear`
 play_game
