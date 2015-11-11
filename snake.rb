@@ -50,7 +50,6 @@ def print_matrix
     puts
   end
   puts "Score: #{@score} Snake Length: #{@snake_length}"
-  #puts "x : #{@x} y: #{@y}"
 end
 
 def game_over?
@@ -80,12 +79,6 @@ def set_current_square
     @grid[@x][@y] = @snake 
   end
 end
-
-#def set_snake_squares
-#  @snake_squares.each do |square|
-#    print "#{square["x"]} , #{square["y"]}"
-# end
-#end
 
 def make_move
   if @grid[@x][@y] == @snake && @snake_length > 1
@@ -148,29 +141,6 @@ def move_snake? direction
   end
 end
 
-#def is_not_opposite_direction? direction
-#  #binding.pry;''
-#  case direction
-#    when 'e'
-#      if @previous_direction == 'd' || @previous_direction == ''
-#        return false
-#      end
-#    when 'd'
-#      if @previous_direction == 'e' || @previous_direction == ''
-#        return false
-#      end
-#    when 'o'
-#      if @previous_direction == 'p' || @previous_direction == ''
-#        return false
-#      end
-#    when 'p'
-#      if @previous_direction == 'o' || @previous_direction == ''
-#        return false
-#      end
-#  end
-#  return true
-#end
-
 def play_game
   @x = 10
   @y = 10
@@ -207,15 +177,11 @@ def play_game
     if move_snake?(@key_moves[@direction]) == false
       break
     end
-  
-    #sleep 0.2
-    #sleep 0.1
+
     sleep @speed
     puts `clear`
     print_matrix
-    #puts "#{@direction} : #{@previous_direction}"
   end
-  #end
 end
 
 def home
@@ -240,9 +206,9 @@ def home
 
   puts
   puts
-  puts "Welcome to Snake"
+  puts "Welcome to Ruby Snake"
   puts
-  puts "Move your snake around the screen eating apples in order to grow."
+  puts "Move your snake around the screen eating apples ('0's) in order to grow."
   puts
   puts "But beware of running into yourself or running off the screen "
   puts "as this will result in your instant death!"
@@ -262,16 +228,16 @@ def home
 end
 
 def getSkillLevel
-  puts "Select your skill level:"
-  puts 
-  puts "\t1\t->\tDifficult"
-  puts 
-  puts "\t2\t->\tNormal"
-  puts 
-  puts "\t3\t->\tEasy"
-  puts
-  
   loop do
+    puts "Select your skill level:"
+    puts 
+    puts "\t1\t->\tDifficult"
+    puts 
+    puts "\t2\t->\tNormal"
+    puts 
+    puts "\t3\t->\tEasy"
+    puts
+  
     level = gets.chomp
     if @skill_levels.has_key?(level)
         @speed =  @skill_levels[level]
