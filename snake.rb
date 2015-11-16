@@ -13,7 +13,7 @@ end
 
 @bugs_and_scores = {"*" => 10, "#" =>5, "?" => -5, ";" => -10, "." => 0, "@" => 0, "X" => 100, "~" => 0, "0" => 0} 
 
-@skill_levels = {"1" => 0.1, "2" => 0.2, "3" => 0.3}
+@skill_levels = {"1" => 0.3, "2" => 0.2, "3" => 0.1, "4" => 0.05}
 
 @score = 0
 @snake = '@'
@@ -25,7 +25,7 @@ end
 @speed
 
 def add_bug bug 
-  @grid[rand(1..18)][rand(1..38)] = bug
+  @grid[rand(1..@numRows-2)][rand(1..@numColumns-2)] = bug
 end
 
 def add_bugs
@@ -149,8 +149,7 @@ def play_game
   
   sq = { "x" => @x, "y" => @y}
   @snake_squares << sq
-  @grid[@x][@y] = @snake
-  
+  @grid[@x][@y] = @snake 
   
   puts `clear`
   add_bugs
@@ -169,11 +168,9 @@ def play_game
       @previous_direction = @direction
       @direction = command
     end
-    #if is_not_opposite_direction? (@direction)
     if @key_moves.has_key?(command)
       @direction = command   
     end
-
     if move_snake?(@key_moves[@direction]) == false
       break
     end
@@ -184,7 +181,7 @@ def play_game
   end
 end
 
-def home
+def welcome
   puts `clear`
   puts "              /^\\/^\\"
   puts "            _|__|  O|"
@@ -203,8 +200,6 @@ def home
   puts "          \\      ~-____-~    _-~    ~-_    ~-_-~    /"
   puts "            ~-_           _-~          ~-_       _-~"
   puts "               ~--______-~                ~-___-~"
-
-  puts
   puts
   puts "Welcome to Ruby Snake"
   puts
@@ -231,11 +226,13 @@ def getSkillLevel
   loop do
     puts "Select your skill level:"
     puts 
-    puts "\t1\t->\tDifficult"
+    puts "\t1\t->\tEasy"
     puts 
     puts "\t2\t->\tNormal"
     puts 
-    puts "\t3\t->\tEasy"
+    puts "\t3\t->\tHard"
+    puts
+    puts "\t4\t->\tWTF!"
     puts
   
     level = gets.chomp
@@ -247,7 +244,7 @@ def getSkillLevel
   end
 end
 
-home
+welcome
 getSkillLevel
 puts `clear`
 play_game
