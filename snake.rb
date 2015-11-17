@@ -25,7 +25,7 @@ end
 @speed
 
 def add_bug bug 
-  @grid[rand(1..@numRows-2)][rand(1..@numColumns-2)] = bug
+  @grid[rand(1..@numRows-3)][rand(1..@numColumns-3)] = bug
 end
 
 def add_bugs
@@ -140,47 +140,6 @@ def move_snake? direction
       @grid[@x][@y]= @snake
   end
 end
-
-def play_game
-  @x = 10
-  @y = 10
-  
-  reset_grid
-  
-  sq = { "x" => @x, "y" => @y}
-  @snake_squares << sq
-  @grid[@x][@y] = @snake 
-  
-  puts `clear`
-  add_bugs
-  print_matrix
-  
-  term = `stty -g`
-  `stty raw -echo cbreak`
-  @direction = ''
-  loop do
-    `clear`
-    if STDIN.ready?
-      command = STDIN.getc
-      if command == 'q' 
-        break
-      end
-      @previous_direction = @direction
-      @direction = command
-    end
-    if @key_moves.has_key?(command)
-      @direction = command   
-    end
-    if move_snake?(@key_moves[@direction]) == false
-      break
-    end
-
-    sleep @speed
-    puts `clear`
-    print_matrix
-  end
-end
-
 def welcome
   puts `clear`
   puts "              /^\\/^\\"
@@ -244,7 +203,72 @@ def getSkillLevel
   end
 end
 
+def playNewGame?
+  puts "Would you like to pla(y) another game, or quit(q)?"
+    #binding.pry;""
+    option = gets.chomp
+    #binding.pry;""
+    if option == 'y'
+      return true
+    elsif option == 'q'
+      return false
+    else
+      return playNewGame?
+    end
+end
+
+def newGame
+  getSkillLevel
+  puts `clear`
+  playGame
+end
+
+def playGame
+  @x = 10
+  @y = 10
+  
+  reset_grid
+  
+  sq = { "x" => @x, "y" => @y}
+  @snake_squares << sq
+  @grid[@x][@y] = @snake 
+  
+  puts `clear`
+  add_bugs
+  print_matrix
+  
+  term = `stty -g`
+  `stty raw -echo cbreak`
+  @direction = ''
+  loop do
+    `clear`
+    if STDIN.ready?
+      command = STDIN.getc
+      if command == 'q' 
+        break
+      end
+      @previous_direction = @direction
+      @direction = command
+    end
+    if @key_moves.has_key?(command)
+      @direction = command   
+    end
+    if move_snake?(@key_moves[@direction]) == false
+      system "stty -raw echo"
+      if playNewGame?
+        newGame
+      end
+      break
+    end
+
+    sleep @speed
+    puts `clear`
+    print_matrix
+  end
+end
+
 welcome
-getSkillLevel
-puts `clear`
-play_game
+newGame
+
+
+
