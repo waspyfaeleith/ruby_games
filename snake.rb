@@ -15,14 +15,16 @@ end
 
 @skill_levels = {"1" => 0.3, "2" => 0.2, "3" => 0.1, "4" => 0.05}
 
-@score = 0
-@snake = '@'
-@snake_extender="0"
-@snake_length = 1
-@snake_squares = []
-@square_to_reset
-@previous_direction = ''
-@speed
+def reset
+  @score = 0
+  @snake = '@'
+  @snake_extender="0"
+  @snake_length = 1
+  @snake_squares = []
+  @square_to_reset
+  @previous_direction = ''
+  @speed
+end
 
 def add_bug bug 
   @grid[rand(1..@numRows-3)][rand(1..@numColumns-3)] = bug
@@ -218,6 +220,7 @@ def playNewGame?
 end
 
 def newGame
+  reset
   getSkillLevel
   puts `clear`
   playGame
