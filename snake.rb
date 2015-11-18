@@ -206,7 +206,7 @@ def getSkillLevel
 end
 
 def playNewGame?
-  puts "Would you like to pla(y) another game, or quit(q)?"
+  puts "Would you like to pla(y) another game, or (q)uit?"
     #binding.pry;""
     option = gets.chomp
     #binding.pry;""
