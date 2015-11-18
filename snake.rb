@@ -27,7 +27,14 @@ def reset
 end
 
 def add_bug bug 
-  @grid[rand(1..@numRows-3)][rand(1..@numColumns-3)] = bug
+  squareX = rand(1..@numRows-3)
+  squareY = rand(1..@numColumns-3)
+  if @grid[squareX][squareY] != @snake
+    @grid[squareX][squareY] = bug
+  else
+    add_bug bug
+  end
+  #@grid[rand(1..@numRows-3)][rand(1..@numColumns-3)] = bug
 end
 
 def add_bugs
