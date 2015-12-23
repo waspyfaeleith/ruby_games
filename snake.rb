@@ -1,6 +1,6 @@
 require 'io/console'
 require 'io/wait'
-require 'pry-byebug'
+#require 'pry-byebug'
 
 @numRows = 20
 @numColumns = 40
@@ -34,7 +34,6 @@ def add_bug bug
   else
     add_bug bug
   end
-  #@grid[rand(1..@numRows-3)][rand(1..@numColumns-3)] = bug
 end
 
 def add_bugs
@@ -178,15 +177,12 @@ def welcome
   puts
   puts "Controls:"
   puts
-  puts "\t\tUp\t-->\te"
+  puts "\tUp\t-->\te"
+  puts "\tDown\t-->\td"
+  puts "\tLeft\t-->\to"
+  puts "\tRight\t-->\tp"
   puts
-  puts "\t\tDown\t-->\td"
-  puts
-  puts "\t\tLeft\t-->\to"
-  puts
-  puts "\t\tRight\t-->\tp"
-  puts
-  puts "\t\tQuit\t-->\tq"
+  puts "\tQuit\t-->\tq"
   puts
 end
 
@@ -195,11 +191,8 @@ def getSkillLevel
     puts "Select your skill level:"
     puts 
     puts "\t1\t->\tEasy"
-    puts 
     puts "\t2\t->\tNormal"
-    puts 
     puts "\t3\t->\tHard"
-    puts
     puts "\t4\t->\tWTF!"
     puts
   
