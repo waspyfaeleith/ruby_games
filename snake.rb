@@ -1,9 +1,9 @@
 require 'io/console'
 require 'io/wait'
-#require 'pry-byebug'
+require 'pry-byebug'
 
 @numRows = 20
-@numColumns = 40
+@numColumns = 60
 
 class String
 def black;          "\e[30m#{self}\e[0m" end
@@ -32,20 +32,19 @@ def reverse_color;  "\e[7m#{self}\e[27m" end
 end
 
 def reset_grid
-  @grid = Array.new(@numRows, ".").map{|row| Array.new(@numColumns, " ")}
+  @grid = Array.new(@numRows, " ").map{|row| Array.new(@numColumns, " ")}
 end
 
 @key_moves = {"e" => "up", "d" => "down", "o" => "left", "p" => "right", "q" => "quit", "c" => "clear" }
 
-@bugs_and_scores = {"*" => 10, "#" =>5, "?" => -5, ";" => -10, "." => 0, "@" => 0, "X" => 100, "~" => 0, "0" => 0,
-"O".red => 0, " " => 0 } 
+@bugs_and_scores = {"*".green => 10, "#".cyan =>5, "?".brown => -5, ";".magenta => -10, "." => 0, "@" => 0, "X".blue => 100, "~" => 0, "0" => 0,"O".red => 0, " " => 0, " ".bg_red => 0} 
 
 @skill_levels = {"1" => 0.3, "2" => 0.2, "3" => 0.1, "4" => 0.05}
 
 def reset
   @score = 0
   @snake = " ".bg_green
-  @snake_extender="O".red
+  @snake_extender=" ".bg_red
   @snake_length = 1
   @snake_squares = []
   @square_to_reset
@@ -65,28 +64,38 @@ end
 
 def add_bugs
   5.times do
-    add_bug "*"
-    add_bug "#"
-    add_bug "?"
-    add_bug ";"
+    add_bug "*".green
+    add_bug "#".cyan
+    add_bug "?".brown
+    add_bug ";".magenta
   end
-  add_bug "X"
+  add_bug "X".blue
   add_bug @snake_extender
 end
 
 def set_score
   c = @grid[@x][@y]
-
-  #if c != " "
-    @score = @score + @bugs_and_scores[c]
-  #end
+  @score = @score + @bugs_and_scores[c]
 end
 
 def print_matrix
+  #binding.pry;
+  @grid[0].each do|column|
+    print " ".bg_gray
+  end
+  print "  ".bg_gray
+  puts
   @grid.each do |row|
+    print " ".bg_gray
     print row.join("")
+    print " ".bg_gray
     puts
   end
+  @grid[19].each do|column|
+    print " ".bg_gray
+  end
+  print "  ".bg_gray
+  puts
   puts "Score: #{@score} Snake Length: #{@snake_length}"
 end
 
@@ -180,23 +189,23 @@ def move_snake? direction
 end
 def welcome
   puts `clear`
-  puts "              /^\\/^\\"
-  puts "            _|__|  O|"
-  puts "   \\/     /~     \\_/ \\"
-  puts "    \\____|__________/  \\"
-  puts "        \\_______      \\"
-  puts "                `\\     \\                  \\"
-  puts "                  |     |                   \\"
-  puts "                 /      /                    \\   " 
-  puts "                /     /                       \\"
-  puts "              /      /                         \\\\"
-  puts "             /     /                            \\ \\"
-  puts "           /     /             _----_            \\  \\"
-  puts "          /     /           _-~      ~-_         |   |"
-  puts "         (      (        _-~    _--_    ~-_     _/   |"
-  puts "          \\      ~-____-~    _-~    ~-_    ~-_-~    /"
-  puts "            ~-_           _-~          ~-_       _-~"
-  puts "               ~--______-~                ~-___-~"
+  puts "              /^\\/^\\".green
+  puts "            _|__|  ".green + "O".cyan + "|".green
+  puts "   \\/".red + "     /~     \\_/ \\".green
+  puts "    \\____".red + "|__________/  \\".green
+  puts "        \\_______      \\".green
+  puts "                `\\     \\                  \\".green
+  puts "                  |     |                   \\".green
+  puts "                 /      /                    \\   ".green
+  puts "                /     /                       \\".green
+  puts "              /      /                         \\\\".green
+  puts "             /     /                            \\ \\".green
+  puts "           /     /             _----_            \\  \\".green
+  puts "          /     /           _-~      ~-_         |   |".green
+  puts "         (      (        _-~    _--_    ~-_     _/   |".green
+  puts "          \\      ~-____-~    _-~    ~-_    ~-_-~    /".green
+  puts "            ~-_           _-~          ~-_       _-~".green
+  puts "               ~--______-~                ~-___-~".green
   puts
   puts "Welcome to Ruby Snake"
   puts
