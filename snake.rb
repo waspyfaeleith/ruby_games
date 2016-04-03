@@ -5,20 +5,47 @@ require 'io/wait'
 @numRows = 20
 @numColumns = 40
 
+class String
+def black;          "\e[30m#{self}\e[0m" end
+def red;            "\e[31m#{self}\e[0m" end
+def green;          "\e[32m#{self}\e[0m" end
+def brown;          "\e[33m#{self}\e[0m" end
+def blue;           "\e[34m#{self}\e[0m" end
+def magenta;        "\e[35m#{self}\e[0m" end
+def cyan;           "\e[36m#{self}\e[0m" end
+def gray;           "\e[37m#{self}\e[0m" end
+
+def bg_black;       "\e[40m#{self}\e[0m" end
+def bg_red;         "\e[41m#{self}\e[0m" end
+def bg_green;       "\e[42m#{self}\e[0m" end
+def bg_brown;       "\e[43m#{self}\e[0m" end
+def bg_blue;        "\e[44m#{self}\e[0m" end
+def bg_magenta;     "\e[45m#{self}\e[0m" end
+def bg_cyan;        "\e[46m#{self}\e[0m" end
+def bg_gray;        "\e[47m#{self}\e[0m" end
+
+def bold;           "\e[1m#{self}\e[22m" end
+def italic;         "\e[3m#{self}\e[23m" end
+def underline;      "\e[4m#{self}\e[24m" end
+def blink;          "\e[5m#{self}\e[25m" end
+def reverse_color;  "\e[7m#{self}\e[27m" end
+end
+
 def reset_grid
-  @grid = Array.new(@numRows, ".").map{|row| Array.new(@numColumns, ".")}
+  @grid = Array.new(@numRows, ".").map{|row| Array.new(@numColumns, " ")}
 end
 
 @key_moves = {"e" => "up", "d" => "down", "o" => "left", "p" => "right", "q" => "quit", "c" => "clear" }
 
-@bugs_and_scores = {"*" => 10, "#" =>5, "?" => -5, ";" => -10, "." => 0, "@" => 0, "X" => 100, "~" => 0, "0" => 0} 
+@bugs_and_scores = {"*" => 10, "#" =>5, "?" => -5, ";" => -10, "." => 0, "@" => 0, "X" => 100, "~" => 0, "0" => 0,
+"O".red => 0, " " => 0 } 
 
 @skill_levels = {"1" => 0.3, "2" => 0.2, "3" => 0.1, "4" => 0.05}
 
 def reset
   @score = 0
-  @snake = '@'
-  @snake_extender="0"
+  @snake = " ".bg_green
+  @snake_extender="O".red
   @snake_length = 1
   @snake_squares = []
   @square_to_reset
@@ -49,12 +76,15 @@ end
 
 def set_score
   c = @grid[@x][@y]
-  @score = @score + @bugs_and_scores[c]
+
+  #if c != " "
+    @score = @score + @bugs_and_scores[c]
+  #end
 end
 
 def print_matrix
   @grid.each do |row|
-    print row.join(" ")
+    print row.join("")
     puts
   end
   puts "Score: #{@score} Snake Length: #{@snake_length}"
@@ -71,7 +101,7 @@ def game_over_cannibal?
 end
 
 def reset_old_square
-  @grid[@square_to_reset["x"]][@square_to_reset["y"]] = "."
+  @grid[@square_to_reset["x"]][@square_to_reset["y"]] = " "
 end
 
 def set_current_square
@@ -272,6 +302,3 @@ end
 
 welcome
 newGame
-
-
-
