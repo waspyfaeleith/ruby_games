@@ -1,6 +1,6 @@
 require 'io/console'
 require 'io/wait'
-require 'pry-byebug'
+#require 'pry-byebug'
 
 @numRows = 20
 @numColumns = 60
