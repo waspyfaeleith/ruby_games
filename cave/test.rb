@@ -71,10 +71,10 @@ def print_grid
 
 def scroll
   #binding.pry;
-  @grid.shift
+  @grid.pop
   col = Column.new(20,5)
   col.draw
-  @grid.push(col.column)
+  @grid.unshift(col.column)
   puts `clear`
   #set_grid
   print_grid
