@@ -1,13 +1,16 @@
 require 'pry-byebug'
 require './string'
 require './column'
+require 'io/console'
+require 'io/wait'
 
 @numRows = 20
-@numColumns = 80
+@numColumns = 40
 
 @player = " ".bg_red
 @player_x = 10
-@player_y = 40
+@player_y = 10
+@score = 0
 
 def reset_grid
   #@grid = Array.new(@numColumns, ".").map{|row| Array.new(@numRows, ".")}
@@ -24,7 +27,7 @@ def set_grid
   #  end 
   #end
 
-  col = Column.new(3,5)
+  col = Column.new(5,5)
   col.draw
   for j in 0..@numRows-1
     #fill_in_column(j)
@@ -37,7 +40,7 @@ def set_grid
 end
 
 def fill_in_column column
-  col = Column.new(3,5)
+  col = Column.new(5,5)
   col.draw
   for i in 0..@numRows-1  
     @grid[i][column] = col.column[i]
@@ -45,7 +48,8 @@ def fill_in_column column
 end
 
 def print_grid
-  #binding.pry;
+  #binding.pry
+
   @grid[@player_x][@player_y] = @player
     for i in 0..@numRows-1
       for j in 0..@numColumns-1
@@ -54,7 +58,9 @@ def print_grid
         #puts "#{i}:#{j}"
       end 
       puts
+
     end 
+    puts "Score: #{@score}".magenta
   end
 
   def caveColumn (columnNum,prevCaveTop)
@@ -72,12 +78,32 @@ def print_grid
 def scroll
   #binding.pry;
   @grid.pop
-  col = Column.new(20,5)
+  col = Column.new(5,5)
   col.draw
   @grid.unshift(col.column)
   puts `clear`
-  #set_grid
+  move_player_down
   print_grid
+end
+
+def crashed
+  if (@grid[@player_x][@player_y] == " ".bg_green)
+    puts "You crashed!"
+    return true
+  else
+    @score = @score + 1
+    return false
+  end
+end
+
+def move_player_up
+  @player_y = @player_y - 2
+  #puts "#{@player_y}"
+end
+
+def move_player_down
+  @player_y = @player_y + 1
+  #puts "#{@player_y}"
 end
 
 reset_grid
@@ -91,7 +117,36 @@ puts
 
 print_grid
 
-loop do
-  sleep 0.5
-  scroll
-end
+  term = `stty -g`
+  `stty raw -echo cbreak`
+
+  loop do
+    `clear`
+    if STDIN.ready?
+      command = STDIN.getc
+      if command == 'q' 
+        break
+      end
+      if command == ' '
+        move_player_up
+      end
+    end
+    
+    if crashed == true
+      system "stty -raw echo"
+      break
+    end
+    
+    sleep 0.25
+    scroll
+    #sleep @speed
+    #puts `clear`
+    #print_matrix
+    
+  end
+
+#
+#loop do
+#  sleep 0.25
+#  scroll
+#end

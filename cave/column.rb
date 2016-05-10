@@ -4,7 +4,7 @@ class Column
   attr_accessor :cave_top, :cave_bottom, :column, :column_height
 
   def initialize (prev_cave_top, cave_height)
-    @column_height = 80
+    @column_height = 40
     @cave_top = prev_cave_top + rand(-1..2)
     @cave_bottom = @column_height - rand(10..20)
     @column = []
