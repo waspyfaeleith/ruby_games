@@ -1,6 +1,6 @@
 require 'io/console'
 require 'io/wait'
-require_relative('string')
+require ('./string')
 #require 'pry-byebug'
 
 @numRows = 20
