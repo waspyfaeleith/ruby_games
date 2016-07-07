@@ -20,7 +20,6 @@ end
 
 def set_grid
   col = Column.new(3,5)
-  #col = Column.new(10, 10)
   col.draw
   for i in 0..@numRows-1
     col = Column.new(col.cave_top, 5)
@@ -29,37 +28,19 @@ def set_grid
   end 
 end
 
-def rotate_grid
-  #binding.pry
-  for i in 0..@numColumns-1
-    for j in 0..@numRows-1
-      #puts "i: #{i} j:#{j}"
-      @display_grid[i][j] = @grid[j][i]
-    end
-  end
-end
-
 def print_grid
   @grid[@player_x][@player_y] = @player
-  #rotate_grid
-  #binding.pry
   @display_grid = @grid.transpose()
   for i in 0..@numColumns-1
     for j in 0..@numRows-1
-      #puts "i: #{i} j:#{j}"
-      #print"#{@grid[i][j]}"
       print"#{@display_grid[i][j]}"
     end 
     puts
   end 
   puts "Score: #{@score}".magenta
-  #puts "[#{@player_x}][#{@player_y}]"
-  #puts "#{@grid[@player_x][@player_y]}"
-  #puts "#{@grid[@player_x][@player_y+1]}"
 end
 
 def scroll
-  #binding.pry;
   @grid.pop
   col = Column.new(3,5)
   col.draw
@@ -71,7 +52,6 @@ end
 
 def check_for_crash
   if (@grid[@player_x][@player_y] == " ".bg_green)
-    #print_grid
     puts "You crashed! - GAME OVER!".red
     puts "Your score was: #{@score}".magenta
     abort
@@ -85,20 +65,17 @@ end
 def move_player_up
   @player_y = @player_y - 2
   check_for_crash
-  #puts "#{@player_y}"
 end
 
 def move_player_down
   @player_y = @player_y + 1
   check_for_crash
-  #puts "#{@player_y}"
 end
 
 reset_grid
 set_grid
 puts
 puts
-#rotate_grid
 print_grid
 
 #main program
@@ -114,28 +91,10 @@ loop do
     if command == ' '
       move_player_up
     end
-    #if crashed == true
-    #  system "stty -raw echo"
-    #  break
-    #end
+
   end
-  
-  #if crashed == true
-  #  system "stty -raw echo"
-  #  break
-  #end
   
   sleep 0.25
 
   scroll
-  #if crashed == true
-  #  system "stty -raw echo"
-  #  break
-  #end
 end
-
-#
-#loop do
-#  sleep 0.25
-#  scroll
-#end

@@ -14,7 +14,6 @@ class Column
     #puts @cave_top
     for i in 0..@column_height-1
       @column[i] = " ".bg_green
-      #@column[i] = "."
 
     end
     for j in @cave_top..@cave_bottom
