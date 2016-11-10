@@ -162,6 +162,7 @@ def move_snake? direction
       @grid[@x][@y]= @snake
   end
 end
+
 def welcome
   puts `clear`
   puts "              /^\\/^\\".green

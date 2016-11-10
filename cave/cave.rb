@@ -54,7 +54,9 @@ def check_for_crash
   if (@grid[@player_x][@player_y] == " ".bg_green)
     puts "You crashed! - GAME OVER!".red
     puts "Your score was: #{@score}".magenta
-    abort
+    exec 'stty sane'
+    exit
+    #abort
     return true
   else
     @score = @score + 1
