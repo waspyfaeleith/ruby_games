@@ -1,12 +1,18 @@
 require ('./string')
 
 class Column
-  attr_accessor :cave_top, :cave_bottom, :column, :column_height
+  attr_accessor :cave_top, :cave_bottom, :column, :column_height, :direction
 
-  def initialize (prev_cave_top, cave_height)
+  def initialize (prev_cave_top, cave_height, direction)
     @column_height = 20
-    @cave_top = prev_cave_top + rand(-1..1)
-    @cave_bottom = @column_height - rand(5..10)
+    
+    diff = direction == "UP" ? 1 : -1
+    @cave_top = prev_cave_top +  diff
+
+      #@cave_top = prev_cave_top + rand(-1..1)
+    #@cave_bottom = @column_height - 5 #rand(5..10)
+    @cave_bottom = @column_height - 5
+
     @column = []
   end
 

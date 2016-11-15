@@ -12,6 +12,7 @@ require 'io/wait'
 @player_x = 5
 @player_y = 5
 @score = 0
+@direction = "UP"
 
 def reset_grid
   @grid = Array.new(@numRows) { Array.new(@numColumns) }
@@ -19,17 +20,23 @@ def reset_grid
 end
 
 def set_grid
-  col = Column.new(3,5)
+  col = Column.new(3,2,@direction)
   col.draw
   for i in 0..@numRows-1
-    col = Column.new(col.cave_top, 5)
+    if (col.cave_top > 5) 
+      direction = "DOWN"
+    elsif (col.cave_top < 10)
+      direction = "UP"
+    end
+
+    col = Column.new(col.cave_top, 5, @direction)
     col.draw
     @grid[i] = col.column
   end 
 end
 
 def print_grid
-  @grid[@player_x][@player_y] = @player
+  #@grid[@player_x][@player_y] = @player
   @display_grid = @grid.transpose()
   for i in 0..@numColumns-1
     for j in 0..@numRows-1
@@ -41,8 +48,9 @@ def print_grid
 end
 
 def scroll
+  binding.pry
   @grid.pop
-  col = Column.new(3,5)
+  col = Column.new(3,5, @direction)
   col.draw
   @grid.unshift(col.column)
   puts `clear`
