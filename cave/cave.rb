@@ -13,30 +13,54 @@ require 'io/wait'
 @player_y = 5
 @score = 0
 @direction = "UP"
+@cave_height = 8
+@top = 5
+@bottom
+@col
 
 def reset_grid
   @grid = Array.new(@numRows) { Array.new(@numColumns) }
   @display_grid = Array.new(@numColumns) { Array.new(@numRows)}
 end
 
-def set_grid
-  col = Column.new(3,2,@direction)
-  col.draw
-  for i in 0..@numRows-1
-    if (col.cave_top > 5) 
-      direction = "DOWN"
-    elsif (col.cave_top < 10)
-      direction = "UP"
-    end
+def set_direction
+  if (@bottom > 15 || @top > 10) 
+    @direction = "UP"
+  elsif (@top < 2 )
+    @direction = "DOWN"
+  end
+end
 
-    col = Column.new(col.cave_top, 5, @direction)
-    col.draw
-    @grid[i] = col.column
+def set_top_and_bottom
+  @top = @col.cave_top
+  @bottom = @col.cave_bottom
+end
+
+def set_grid
+  #binding.pry
+  @col = Column.new(@top, @cave_height, @direction)
+  set_top_and_bottom
+
+  @player_y = @top + 2
+
+  @col.draw
+  #binding.pry
+  for i in 0..@numRows-1
+    #set_direction
+
+    @col = Column.new(@top, @cave_height , @direction)
+    set_direction
+    set_top_and_bottom
+  
+    @col.draw
+    @grid[i] = @col.column
+    
   end 
+  #binding.pry;
 end
 
 def print_grid
-  #@grid[@player_x][@player_y] = @player
+  @grid[@player_x][@player_y] = @player
   @display_grid = @grid.transpose()
   for i in 0..@numColumns-1
     for j in 0..@numRows-1
@@ -45,21 +69,29 @@ def print_grid
     puts
   end 
   puts "Score: #{@score}".magenta
+  puts "#{@direction}" 
+  puts "Top: #{@top} Bottom: #{@bottom}"
 end
 
 def scroll
-  binding.pry
+  #binding.pry
   @grid.pop
-  col = Column.new(3,5, @direction)
-  col.draw
-  @grid.unshift(col.column)
+  set_top_and_bottom
+  @col = Column.new(@top, @cave_height, @direction)
+  set_top_and_bottom
+  
+  @col.draw
+  @grid.unshift(@col.column)
+
   puts `clear`
   move_player_down
   print_grid
+  set_direction
 end
 
 def check_for_crash
   if (@grid[@player_x][@player_y] == " ".bg_green)
+    #binding.pry
     puts "You crashed! - GAME OVER!".red
     puts "Your score was: #{@score}".magenta
     exec 'stty sane'
