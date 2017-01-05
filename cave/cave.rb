@@ -7,6 +7,7 @@ require 'io/wait'
 @numRows = 80
 @numColumns = 20
 
+
 #@player = ".".red
 @player = '▪'.red
 @player_x = 5
@@ -17,6 +18,7 @@ require 'io/wait'
 @top = 5
 @bottom
 @col
+@speed = 0.25
 
 def reset_grid
   @grid = Array.new(@numRows) { Array.new(@numColumns) }
@@ -136,7 +138,7 @@ loop do
 
   end
   
-  sleep 0.25
+  sleep @speed
 
   scroll
 end

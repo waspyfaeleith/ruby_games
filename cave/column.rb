@@ -2,22 +2,29 @@ require ('./string')
 require ('pry-byebug')
 
 class Column
-  attr_accessor :cave_top, :cave_bottom, :column, :column_height, :direction
+  attr_accessor :cave_top, :cave_bottom, :column, :column_height#, :direction
+
+  @@direction
+  @@count
 
   def initialize (prev_cave_top, cave_height, direction)
     #binding.pry 
     @column_height = 20
+    @@count = 0
 
-    diff = direction == "UP" ? -1 : 1
     if (rand(-1..1) == 0)
-      diff = 0
+      @@direction = 0
+      @@count = 20
     end
-    @cave_top = prev_cave_top +  diff
 
-    #@cave_top = prev_cave_top + rand(-1..1)
-    #@cave_bottom = @column_height - 5 #rand(5..10)
-    #@cave_bottom = @column_height - (cave_height - @cave_top) 
-    #@column_height - 5
+    if @@count == 0
+      @@direction = direction == "UP" ? -1 : 1
+    else 
+      @@count -= 1
+    end
+    
+    @cave_top = prev_cave_top + @@direction
+
     @cave_bottom = @cave_top + cave_height
 
     @column = []
