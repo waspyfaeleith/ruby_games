@@ -5,6 +5,7 @@ require ('./string')
 
 @numRows = 20
 @numColumns = 60
+@snake_extender="0".red
 
 def reset_grid
   @grid = Array.new(@numRows, " ").map{|row| Array.new(@numColumns, " ")}
@@ -12,25 +13,27 @@ end
 
 @key_moves = {"e" => "up", "d" => "down", "o" => "left", "p" => "right", "q" => "quit", "c" => "clear" }
 
-@bugs_and_scores = {"*".green => 10, "#".cyan =>5, "?".brown => -5, ";".magenta => -10, "." => 0, "@" => 0, "X".blue => 100, "~" => 0, "0" => 0,"O".red => 0, " " => 0, " ".bg_red => 0} 
+@bugs_and_scores = {"*".green => 10, "#".cyan =>5, "?".brown => -5, ";".magenta => -10, "." => 0, "@" => 0, "X".blue => 100, "~" => 0, "0" => 0, "0".red => 0,"O".red => 0, " " => 0, " ".bg_red => 0} 
 
 @skill_levels = {"1" => 0.3, "2" => 0.2, "3" => 0.1, "4" => 0.05}
 
 def reset
   @score = 0
   @snake = " ".bg_green
-  @snake_extender=" ".bg_red
+  #@snake_extender="0".red
   @snake_length = 1
   @snake_squares = []
   @square_to_reset
   @previous_direction = ''
   @speed
+  @wall_brick = " ".bg_gray
 end
 
 def add_bug bug 
-  squareX = rand(1..@numRows-3)
-  squareY = rand(1..@numColumns-3)
-  if @grid[squareX][squareY] != @snake
+  squareX = rand(1..@numRows-4)
+  squareY = rand(1..@numColumns-4)
+  if (@grid[squareX][squareY] == ' ')
+  #if (@grid[squareX][squareY] != @snake) && (@grid[squareX][squareY] != @wall_brick)
     @grid[squareX][squareY] = bug
   else
     add_bug bug
@@ -56,20 +59,20 @@ end
 def print_matrix
   #binding.pry;
   @grid[0].each do|column|
-    print " ".bg_gray
+    print @wall_brick
   end
-  print "  ".bg_gray
+  print @wall_brick + @wall_brick
   puts
   @grid.each do |row|
-    print " ".bg_gray
+    print @wall_brick
     print row.join("")
-    print " ".bg_gray
+    print @wall_brick
     puts
   end
   @grid[19].each do|column|
-    print " ".bg_gray
+    print @wall_brick
   end
-  print "  ".bg_gray
+  print @wall_brick + @wall_brick
   puts
   puts "Score: #{@score} Snake Length: #{@snake_length}"
 end
@@ -185,7 +188,7 @@ def welcome
   puts
   puts "Welcome to Ruby Snake"
   puts
-  puts "Move your snake around the screen eating apples ('0's) in order to grow."
+  puts "Move your snake around the screen eating apples (#{@snake_extender}s) in order to grow."
   puts
   puts "But beware of running into yourself or running off the screen "
   puts "as this will result in your instant death!"
